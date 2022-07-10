@@ -4,7 +4,7 @@
 
 # Data persistant 
 postgres_data
-redist_data
+redis_data
 
 # Enviroment
 .env
