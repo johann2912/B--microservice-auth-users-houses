@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ExceptionsService } from "src/config/exceptions/exceptions.service";
 import { IDatabaseAbstract } from "src/frameworks/pg/core/abstract/database.abstract";
+import { Roles } from "src/lib/enum/roles/roles.enum";
 import { IUserCreate } from "./core/interfaces/create-user.interface";
 import { HashPassword } from "./functions/hashed/password";
 
@@ -10,6 +11,16 @@ export class UserService {
         private databaseService: IDatabaseAbstract, 
         private exceptions: ExceptionsService,
     ) {};
+
+    async allUsers(userId:string){
+        await this.verifyRoleOfUser(userId);
+        const users = await this.databaseService.users.findAll();
+        if(!users.length || users.length < 0) this.exceptions.notFoundException({
+            message: 'users doest not found'
+        });
+
+        return users;
+    }
 
     async createUser({password, ...userData}:IUserCreate){
         await this.verifyExistenceOfUser(userData.email);
@@ -26,5 +37,12 @@ export class UserService {
         if(user) this.exceptions.badRequestException({
             message: 'user already exists'
         });
+    };
+
+    private async verifyRoleOfUser(userId){
+        const user = await this.databaseService.users.findOne(userId);
+        if(user.role !== Roles.ADMIN) this.exceptions.UnauthorizedException({
+            message: 'unauthorized user'
+        })
     };
 };
