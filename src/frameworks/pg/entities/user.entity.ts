@@ -1,5 +1,5 @@
 import { Timestamp } from "./timestamp.entity";
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Roles } from "src/lib/enum/roles/roles.enum";
 import { Document } from "src/lib/enum/document/documents.enum";
 import { Reservation } from "./reservation.entity";
@@ -24,7 +24,7 @@ export class User extends Timestamp {
     phone?: string;
     @Column({type: 'enum', enum: Roles})
     role: Roles;
-    @ManyToOne(
+    @OneToMany(
         (_type) => Reservation, reservation => reservation.user
     )
     reservation: Reservation;

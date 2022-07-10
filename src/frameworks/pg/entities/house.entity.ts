@@ -1,5 +1,5 @@
 import { Timestamp } from "./timestamp.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { StatusHouse } from "src/lib/enum/status-house/status-home.enum";
 import { Reservation } from "./reservation.entity";
 
@@ -15,7 +15,7 @@ export class House extends Timestamp {
     area?: string;
     @Column({type: 'enum', enum: StatusHouse, nullable:true})
     statusHouse: StatusHouse;
-    @ManyToOne(
+    @OneToMany(
         (_type) => Reservation, reservation => reservation.house
     )
     reservation: Reservation;

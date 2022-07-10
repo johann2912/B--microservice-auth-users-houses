@@ -6,6 +6,10 @@
 postgres_data
 redis_data
 
+# migration 
+ormconfig.json
+migrations/
+
 # Enviroment
 .env
 
