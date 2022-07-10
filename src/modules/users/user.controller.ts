@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Post, Put, Session, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Patch, Post, Put, Session, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { plainToClass } from "class-transformer";
 import { AccessGuard } from "src/lib/guards/access.guard";
 import { IAccess } from "src/lib/jwt/interfaces/access";
 import { UserCreateEntryDto } from "./core/dto/entry/create-user-entry.dto";
 import { UserUpdateEntryDto } from "./core/dto/entry/update-user-entry.dto";
+import { UserPasswordUpdateEntryDto } from "./core/dto/entry/update-user-password.dto";
 import { UserCreateReponseDto } from "./core/dto/reponse/create-user-response.dto";
 import { UserUpdateReponseDto } from "./core/dto/reponse/update-user-response.dto";
 import { UserService } from "./user.service";
@@ -50,6 +51,18 @@ export class UsersController {
         @Body() userData: UserUpdateEntryDto
     ){
         const user = await this.userService.updateUser(payload.id, userData);
+        return plainToClass(UserUpdateReponseDto, user, {excludeExtraneousValues:true});
+    };
+
+    @Patch('update-password')
+    @UseGuards(AccessGuard)
+    @ApiBearerAuth()
+    @ApiOkResponse({type: UserUpdateReponseDto})
+    async updatePasswordUser(
+        @Session() payload: IAccess,
+        @Body() userData: UserPasswordUpdateEntryDto
+    ){
+        const user = await this.userService.updatePasswordUser(payload.id, userData);
         return plainToClass(UserUpdateReponseDto, user, {excludeExtraneousValues:true});
     };
 };

@@ -3,6 +3,7 @@ import { ExceptionsService } from "src/config/exceptions/exceptions.service";
 import { IDatabaseAbstract } from "src/frameworks/pg/core/abstract/database.abstract";
 import { Roles } from "src/lib/enum/roles/roles.enum";
 import { IUserCreate } from "./core/interfaces/create-user.interface";
+import { IUserPasswordUpdate } from "./core/interfaces/update-user-password.interface";
 import { IUserUpdate } from "./core/interfaces/update-user.interface";
 import { HashPassword } from "./functions/hashed/password";
 
@@ -47,6 +48,11 @@ export class UserService {
         await this.databaseService.users.update(user.id, userData);
     }
 
+    async updatePasswordUser(userId, {password, newPassword}:IUserPasswordUpdate){
+        const user = await this.myUser(userId);
+        await this.verifyPasswordAndUpdatePassword(user.id, password, newPassword, user.password);
+    };
+
     private async verifyExistenceOfUser(email){
         const user = await this.databaseService.users.findByEmail(email);
         if(user) this.exceptions.badRequestException({
@@ -59,7 +65,16 @@ export class UserService {
             message: 'unauthorized user'
         })
     };
-    // private async verifyPasswordAndUpdatePassword(userPassword, userNewPassword){
-    //     HashPassword.verifyPassword(userPassword, )
-    // };
+    private async verifyPasswordAndUpdatePassword(userId, password, userNewPassword, userPasswordDB){
+        if(HashPassword.verifyPassword(password, userPasswordDB) === true){
+            const hashedPassword = HashPassword.encryptPassword(userNewPassword);
+            await this.databaseService.users.update(userId, {
+                password: hashedPassword
+            });
+        } else {
+            return this.exceptions.badRequestException({
+                message: 'invalid password'
+            })
+        };
+    };
 };
