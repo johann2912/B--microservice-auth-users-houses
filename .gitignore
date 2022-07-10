@@ -2,6 +2,10 @@
 /dist
 /node_modules
 
+# Data persistant 
+postgres_data
+redist_data
+
 # Enviroment
 .env
 
