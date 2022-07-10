@@ -3,6 +3,7 @@ import { ExceptionsService } from "src/config/exceptions/exceptions.service";
 import { IDatabaseAbstract } from "src/frameworks/pg/core/abstract/database.abstract";
 import { Roles } from "src/lib/enum/roles/roles.enum";
 import { IUserCreate } from "./core/interfaces/create-user.interface";
+import { IUserUpdate } from "./core/interfaces/update-user.interface";
 import { HashPassword } from "./functions/hashed/password";
 
 @Injectable()
@@ -21,6 +22,7 @@ export class UserService {
 
         return users;
     };
+
     async myUser(userId:string){
         const user = await this.databaseService.users.findOne(userId);
         if(!user) this.exceptions.notFoundException({
@@ -29,6 +31,7 @@ export class UserService {
 
         return user;
     };
+
     async createUser({password, ...userData}:IUserCreate){
         await this.verifyExistenceOfUser(userData.email);
         const userInstance = {
@@ -38,6 +41,12 @@ export class UserService {
         const user = await this.databaseService.users.create(userInstance);
         return user;
     };
+
+    async updateUser(userId:string, {password, ...userData}: IUserUpdate){
+        const user = await this.myUser(userId);
+        await this.databaseService.users.update(user.id, userData);
+    }
+
     private async verifyExistenceOfUser(email){
         const user = await this.databaseService.users.findByEmail(email);
         if(user) this.exceptions.badRequestException({
@@ -50,4 +59,7 @@ export class UserService {
             message: 'unauthorized user'
         })
     };
+    // private async verifyPasswordAndUpdatePassword(userPassword, userNewPassword){
+    //     HashPassword.verifyPassword(userPassword, )
+    // };
 };

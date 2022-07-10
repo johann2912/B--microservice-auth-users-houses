@@ -1,10 +1,12 @@
-import { Body, Controller, Get, Post, Session, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put, Session, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { plainToClass } from "class-transformer";
 import { AccessGuard } from "src/lib/guards/access.guard";
 import { IAccess } from "src/lib/jwt/interfaces/access";
 import { UserCreateEntryDto } from "./core/dto/entry/create-user-entry.dto";
+import { UserUpdateEntryDto } from "./core/dto/entry/update-user-entry.dto";
 import { UserCreateReponseDto } from "./core/dto/reponse/create-user-response.dto";
+import { UserUpdateReponseDto } from "./core/dto/reponse/update-user-response.dto";
 import { UserService } from "./user.service";
 
 @ApiTags('Users')
@@ -20,7 +22,7 @@ export class UsersController {
         const users = await this.userService.allUsers(payload.id);
         return plainToClass(UserCreateReponseDto, users, {excludeExtraneousValues:true});
     };
-    
+
     @Get('my-user')
     @UseGuards(AccessGuard)
     @ApiBearerAuth()
@@ -37,5 +39,17 @@ export class UsersController {
     ){
         const user = await this.userService.createUser(userData);
         return plainToClass(UserCreateReponseDto, user, {excludeExtraneousValues:true});
+    };
+
+    @Put('update')
+    @UseGuards(AccessGuard)
+    @ApiBearerAuth()
+    @ApiOkResponse({type: UserUpdateReponseDto})
+    async updateUser(
+        @Session() payload: IAccess,
+        @Body() userData: UserUpdateEntryDto
+    ){
+        const user = await this.userService.updateUser(payload.id, userData);
+        return plainToClass(UserUpdateReponseDto, user, {excludeExtraneousValues:true});
     };
 };
