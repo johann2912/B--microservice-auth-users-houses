@@ -3,29 +3,32 @@ import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGe
 import { Roles } from "src/lib/enum/roles/roles.enum";
 import { Document } from "src/lib/enum/document/documents.enum";
 import { Reservation } from "./reservation.entity";
+import { IUser } from "src/modules/users/core/interfaces/user.interface";
 
 @Entity()
-export class User extends Timestamp {
+export class User extends Timestamp implements IUser{
     @PrimaryGeneratedColumn('uuid')
-    id: string;
+    id?: string;
     @Column({type: String})
-    name: string;
+    name?: string;
     @Column({type: String})
-    lastname: string;
+    lastname?: string;
     @Column({type: 'enum', enum: Document})
-    documentType: Document
+    documentType?: Document
     @Column({type: String, unique:true})
-    documentNumber: string;
+    documentNumber?: string;
     @Column({type: String, unique:true})
-    email: string;
+    email?: string;
     @Column({type: String})
-    password: string;
+    password?: string;
     @Column({type: String, nullable:true})
     phone?: string;
+    @Column({type: String})
+    age?: string;
     @Column({type: 'enum', enum: Roles})
-    role: Roles;
+    role?: Roles;
     @OneToMany(
         (_type) => Reservation, reservation => reservation.user
     )
-    reservation: Reservation;
+    reservation?: Reservation;
 };
