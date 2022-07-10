@@ -20,8 +20,15 @@ export class UserService {
         });
 
         return users;
-    }
+    };
+    async myUser(userId:string){
+        const user = await this.databaseService.users.findOne(userId);
+        if(!user) this.exceptions.notFoundException({
+            message: 'user doest not found'
+        });
 
+        return user;
+    };
     async createUser({password, ...userData}:IUserCreate){
         await this.verifyExistenceOfUser(userData.email);
         const userInstance = {
@@ -31,14 +38,12 @@ export class UserService {
         const user = await this.databaseService.users.create(userInstance);
         return user;
     };
-
     private async verifyExistenceOfUser(email){
         const user = await this.databaseService.users.findByEmail(email);
         if(user) this.exceptions.badRequestException({
             message: 'user already exists'
         });
     };
-
     private async verifyRoleOfUser(userId){
         const user = await this.databaseService.users.findOne(userId);
         if(user.role !== Roles.ADMIN) this.exceptions.UnauthorizedException({

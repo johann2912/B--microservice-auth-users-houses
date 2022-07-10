@@ -12,7 +12,6 @@ import { UserService } from "./user.service";
 export class UsersController {
     constructor(private readonly userService: UserService){};
 
-
     @Get('all')
     @UseGuards(AccessGuard)
     @ApiBearerAuth()
@@ -20,7 +19,16 @@ export class UsersController {
     async allUsers(@Session() payload: IAccess){
         const users = await this.userService.allUsers(payload.id);
         return plainToClass(UserCreateReponseDto, users, {excludeExtraneousValues:true});
-    }
+    };
+    
+    @Get('my-user')
+    @UseGuards(AccessGuard)
+    @ApiBearerAuth()
+    @ApiOkResponse({type: UserCreateReponseDto})
+    async myUser(@Session() payload: IAccess){
+        const users = await this.userService.myUser(payload.id);
+        return plainToClass(UserCreateReponseDto, users, {excludeExtraneousValues:true});
+    };
 
     @Post('create')
     @ApiOkResponse({type: UserCreateReponseDto})
@@ -29,5 +37,5 @@ export class UsersController {
     ){
         const user = await this.userService.createUser(userData);
         return plainToClass(UserCreateReponseDto, user, {excludeExtraneousValues:true});
-    }
+    };
 };
