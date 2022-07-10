@@ -1,4 +1,4 @@
 export enum StatusHouse {
     'NEW' = 'NEW',
-    'USED' = 'USED',
-}
+    'OLD' = 'OLD'
+};

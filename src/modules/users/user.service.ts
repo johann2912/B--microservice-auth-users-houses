@@ -19,7 +19,7 @@ export class UserService {
         };
         const user = await this.databaseService.users.create(userInstance);
         return user;
-    }
+    };
 
     private async verifyExistenceOfUser(email){
         const user = await this.databaseService.users.findByEmail(email);
