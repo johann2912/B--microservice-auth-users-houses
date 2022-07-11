@@ -46,12 +46,25 @@ export class UserService {
     async updateUser(userId:string, {password, ...userData}: IUserUpdate){
         const user = await this.myUser(userId);
         await this.databaseService.users.update(user.id, userData);
+
+        return { message: 'user updated succesfully'};
     }
 
     async updatePasswordUser(userId, {password, newPassword}:IUserPasswordUpdate){
         const user = await this.myUser(userId);
         await this.verifyPasswordAndUpdatePassword(user.id, password, newPassword, user.password);
     };
+
+    async deleteUser(userAdminId, userDeletedId){
+        await this.verifyRoleOfUser(userAdminId);
+        const user = await this.databaseService.users.findOne(userAdminId);
+        if(!user) this.exceptions.notFoundException({
+            message: 'user doest not found'
+        });
+        await this.databaseService.users.delete(user.id);
+
+        return { message: 'user successfully deleted'};
+    }
 
     private async verifyExistenceOfUser(email){
         const user = await this.databaseService.users.findByEmail(email);

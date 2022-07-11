@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post, Put, Session, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Put, Session, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { plainToClass } from "class-transformer";
 import { AccessGuard } from "src/lib/guards/access.guard";
@@ -48,7 +48,7 @@ export class UsersController {
     };
 
     @Put('update')
-    @ApiOperation({ summary: 'I can only modify my own user' })
+    @ApiOperation({ summary: 'I can only modify my own user.' })
     @UseGuards(AccessGuard)
     @ApiBearerAuth()
     @ApiOkResponse({type: UserUpdateReponseDto})
@@ -71,6 +71,19 @@ export class UsersController {
         @Body() userData: UserPasswordUpdateEntryDto
     ){
         const user = await this.userService.updatePasswordUser(payload.id, userData);
+        return plainToClass(UserUpdateReponseDto, user, {excludeExtraneousValues:true});
+    };
+
+    @Delete('delete/:userId')
+    @ApiOperation({ summary: `a user can only be deleted by a user in the ADMIN role.`})
+    @UseGuards(AccessGuard)
+    @ApiBearerAuth()
+    @ApiOkResponse({type: UserUpdateReponseDto})
+    async deleteUser(
+        @Session() payload: IAccess,
+        @Param('userId', ParseUUIDPipe) userId: string
+    ){
+        const user = await this.userService.deleteUser(payload.id, userId);
         return plainToClass(UserUpdateReponseDto, user, {excludeExtraneousValues:true});
     };
 };
