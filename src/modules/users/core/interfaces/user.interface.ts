@@ -1,6 +1,6 @@
-import { Reservation } from "src/frameworks/pg/entities";
 import { Document } from "src/lib/enum/document/documents.enum";
 import { Roles } from "src/lib/enum/roles/roles.enum";
+import { IReservation } from "src/modules/reservation/core/interfaces/reservation.interface";
 
 export interface IUser {
     id?:string
@@ -16,5 +16,5 @@ export interface IUser {
     phone?: string;
     age?: string;
     role?: Roles;
-    reservation?: Reservation;
+    reservation?: IReservation;
 };

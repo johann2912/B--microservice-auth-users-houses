@@ -1,5 +1,5 @@
-import { Reservation } from "src/frameworks/pg/entities";
 import { StatusHouse } from "src/lib/enum/status-house/status-home.enum";
+import { IReservation } from "src/modules/reservation/core/interfaces/reservation.interface";
 
 export interface IHouse {
     id?: string;
@@ -10,5 +10,5 @@ export interface IHouse {
     address?: string;
     area?: string;
     statusHouse?: StatusHouse;
-    reservation?: Reservation;
+    reservation?: IReservation;
 }
