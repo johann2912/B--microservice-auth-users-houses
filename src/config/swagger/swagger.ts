@@ -13,7 +13,7 @@ export class SwaggerConfig {
         made by a customer, and validate the coupons by connecting to the 
         coupon discount microservice. `,
       )
-      .setVersion('v0.0.1')
+      .setVersion('v1.0.1')
       .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api/v1/auth-users-houses/docs', app, document, {
