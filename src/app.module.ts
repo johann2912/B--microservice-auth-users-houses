@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PgDatabaseModule } from './frameworks/pg/pg-data.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { HouseModule } from './modules/houses/house.module';
 import { UserModule } from './modules/users/user.module';
 
 @Module({
@@ -12,6 +13,7 @@ import { UserModule } from './modules/users/user.module';
   PgDatabaseModule,
   UserModule,
   AuthModule,
+  HouseModule,
   ],
   controllers: [],
   providers: [],
