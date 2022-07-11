@@ -5,11 +5,13 @@ export class SwaggerConfig {
   static ConfigSwaggerModule(app: INestApplication): void {
     const config = new DocumentBuilder()
       .addBearerAuth()
-      .setTitle('Auth, Houses, Clients - Services')
+      .setTitle('Bookings service')
       .setDescription(
         `This service contains the CRUD of clients, CRUD of administrators, 
-         CRUD of houses. NOTE: only administrators are allowed to create houses, 
-         so that customers can book them.`,
+        CRUD of houses. NOTE: only administrators can create houses, 
+        so that customers can book them. It will also keep track of the reservations 
+        made by a customer, and validate the coupons by connecting to the 
+        coupon discount microservice. `,
       )
       .setVersion('v0.0.1')
       .build();
