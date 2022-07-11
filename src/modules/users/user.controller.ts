@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Patch, Post, Put, Session, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { plainToClass } from "class-transformer";
 import { AccessGuard } from "src/lib/guards/access.guard";
 import { IAccess } from "src/lib/jwt/interfaces/access";
@@ -16,6 +16,8 @@ export class UsersController {
     constructor(private readonly userService: UserService){};
 
     @Get('all')
+    @ApiOperation({ summary: `view a list of all users, can only 
+    be used with users who have the ADMIN role.` })
     @UseGuards(AccessGuard)
     @ApiBearerAuth()
     @ApiOkResponse({type: [UserCreateReponseDto]})
@@ -25,6 +27,7 @@ export class UsersController {
     };
 
     @Get('my-user')
+    @ApiOperation({ summary: 'view all my user information' })
     @UseGuards(AccessGuard)
     @ApiBearerAuth()
     @ApiOkResponse({type: UserCreateReponseDto})
@@ -34,6 +37,8 @@ export class UsersController {
     };
 
     @Post('create')
+    @ApiOperation({ summary: `create a user, a person will be able to create his own 
+    user for the moment anyone can do it, in the future the restrictions may be modified.`})
     @ApiOkResponse({type: UserCreateReponseDto})
     async createUser(
         @Body() userData: UserCreateEntryDto
@@ -43,6 +48,7 @@ export class UsersController {
     };
 
     @Put('update')
+    @ApiOperation({ summary: 'I can only modify my own user' })
     @UseGuards(AccessGuard)
     @ApiBearerAuth()
     @ApiOkResponse({type: UserUpdateReponseDto})
@@ -54,7 +60,9 @@ export class UsersController {
         return plainToClass(UserUpdateReponseDto, user, {excludeExtraneousValues:true});
     };
 
-    @Patch('update-password')
+    @Patch('change-password')
+    @ApiOperation({ summary: `Password change is managed separately, as validations by mail 
+    or SMS may be added in the future to enforce the user's identity.`})
     @UseGuards(AccessGuard)
     @ApiBearerAuth()
     @ApiOkResponse({type: UserUpdateReponseDto})
